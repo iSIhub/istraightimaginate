@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - Final Build</title>
+    <title>iSI - Chromatic Fixed</title>
     <style>
         body, html {
             margin: 0;
@@ -17,7 +17,7 @@
             justify-content: center;
         }
 
-        /* 1. Background Container */
+        /* 1. Background Layer */
         .stripes-container {
             position: absolute;
             top: 0;
@@ -26,9 +26,10 @@
             height: 100%;
             z-index: 1;
             overflow: hidden;
+            background-color: #99bcff; /* Fallback light blue */
         }
 
-        /* 2. Chromatic Aberration Setup */
+        /* Hold the three channels */
         .chromatic-wrapper {
             position: absolute;
             width: 100%;
@@ -39,27 +40,32 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 200%; /* Spans double width for seamless loop */
+            width: 200%; /* Spans double for seamless loop */
             height: 100%;
             background-image: url('stripes.png');
             background-repeat: repeat-x;
             background-size: auto 100%;
-            mix-blend-mode: screen; /* Allows RGB channels to blend */
-            animation: scrollHorizontal 10s linear infinite;
+            animation: scrollHorizontal 12s linear infinite;
         }
 
-        /* Shifted color channels for the aberration effect */
+        /* 2. Chromatic Aberration using Opacity and Offsets */
+        /* This method is more reliable than complex hue-rotation for transparency */
         .red {
-            transform: translateX(-4px);
-            filter: brightness(1) sepia(1) hue-rotate(-50deg) saturate(5);
+            transform: translateX(-3px);
+            opacity: 0.6;
+            filter: drop-shadow(0 0 0 red);
+            mix-blend-mode: multiply;
         }
+
         .green {
             transform: translateX(0px);
-            filter: brightness(1) sepia(1) hue-rotate(70deg) saturate(5);
         }
+
         .blue {
-            transform: translateX(4px);
-            filter: brightness(1) sepia(1) hue-rotate(190deg) saturate(5);
+            transform: translateX(3px);
+            opacity: 0.6;
+            filter: drop-shadow(0 0 0 blue);
+            mix-blend-mode: multiply;
         }
 
         /* 3. The Static Black Polygon Overlay */
@@ -91,7 +97,7 @@
             display: block;
         }
 
-        /* Strictly horizontal scrolling */
+        /* Seamless loop animation */
         @keyframes scrollHorizontal {
             from { transform: translateX(0); }
             to { transform: translateX(-50%); }
@@ -102,8 +108,8 @@
 
     <div class="stripes-container">
         <div class="chromatic-wrapper">
-            <div class="channel red"></div>
             <div class="channel green"></div>
+            <div class="channel red"></div>
             <div class="channel blue"></div>
         </div>
     </div>
