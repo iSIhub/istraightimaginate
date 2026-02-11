@@ -1,433 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>KeySig Quest — Master the Circle</title>
-<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
-<style>
-  @font-face {
-    font-family: 'Retro Disco';
-    src: url('RetroDiscoDEMO-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  :root {
-    --bg-yellow: #fcd12a;
-    --bg-green: #92e65d;
-    --btn-shadow: 0px 4px 0px rgba(0,0,0,0.2);
-    --flash-color: transparent;
-    --accent-pink: #ff00c8;
-  }
-
-  * { box-sizing: border-box; }
-
-  @keyframes shake {
-    0% { transform: translate(1px, 1px); }
-    20% { transform: translate(-3px, 0px); }
-    40% { transform: translate(1px, -1px); }
-    60% { transform: translate(-3px, 1px); }
-    80% { transform: translate(-1px, -1px); }
-    100% { transform: translate(0, 0); }
-  }
-  .shake { animation: shake 0.3s ease-in-out; }
-
-  #flash-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--flash-color);
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.1s ease;
-  }
-
-  body {
-    margin: 0;
-    font-family: 'Arial Black', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-shadow: 2px 2px 0px #000;
-    background: #000;
-  }
-
-  /* CRT OVERLAY - Behind UI */
-  .crt-overlay {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
-    background-size: 100% 4px, 3px 100%;
-    pointer-events: none;
-    z-index: 1; 
-    animation: crtScroll 15s linear infinite, flicker 0.1s infinite;
-  }
-
-  @keyframes crtScroll { from { background-position: 0 0; } to { background-position: 0 100%; } }
-  @keyframes flicker {
-    0% { opacity: 0.95; } 50% { opacity: 1; } 100% { opacity: 0.96; }
-  }
-
-  /* WARBLY STRIPED BACKGROUND */
-  .bg-wrap {
-    position: fixed;
-    inset: -15%; 
-    width: 130%;
-    height: 130%;
-    z-index: 0;
-    background-color: var(--bg-yellow);
-    background-image: linear-gradient(-45deg, 
-      rgba(0,0,0,0.1) 25%, transparent 25%, 
-      transparent 50%, rgba(0,0,0,0.1) 50%, 
-      rgba(0,0,0,0.1) 75%, transparent 75%, 
-      transparent);
-    background-size: 80px 80px; 
-    animation: 
-      scrollBg 45s linear infinite, 
-      warble 8s ease-in-out infinite, 
-      constHueShift 30s linear infinite; 
-    filter: url(#retro-warp) contrast(1.15) saturate(1.3);
-    transition: background-color 0.8s ease;
-  }
-
-  @keyframes scrollBg {
-    from { background-position: 0 0; }
-    to { background-position: 800px 800px; }
-  }
-
-  @keyframes warble {
-    0%, 100% { transform: scale(1) skew(0deg); }
-    50% { transform: scale(1.02) skew(1.5deg); }
-  }
-
-  @keyframes constHueShift {
-    from { filter: url(#retro-warp) hue-rotate(0deg) contrast(1.15) saturate(1.3); }
-    to { filter: url(#retro-warp) hue-rotate(360deg) contrast(1.15) saturate(1.3); }
-  }
-
-  body.rel-mode .bg-wrap { background-color: var(--bg-green); }
-
-  /* UI LAYER */
-  .game-container { 
-    width: 100%; 
-    max-width: 1100px; 
-    padding: 20px; 
-    text-align: center; 
-    position: relative; 
-    z-index: 10; 
-  }
-
-  .hud {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    margin-bottom: 20px;
-    font-family: 'Caveat Brush', cursive;
-    font-size: 1.8rem;
-    text-transform: uppercase;
-  }
-
-  .nav-links { display: flex; align-items: center; gap: 20px; }
-  .nav-links span { cursor: pointer; transition: 0.2s; }
-  .nav-links span:hover { color: var(--accent-pink); }
-
-  .music-box { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 30px; }
-
-  .key-card {
-    background: white;
-    color: black;
-    border-radius: 60px;
-    padding: 30px 60px;
-    display: inline-block;
-    min-width: 450px;
-    box-shadow: 0px 12px 0px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    text-shadow: none;
-    position: relative;
-    transition: transform 0.1s ease-out;
-  }
-
-  .instruction {
-    font-family: 'Caveat Brush', cursive;
-    font-size: 1.6rem;
-    color: #555;
-    margin: 0 0 5px 0;
-    text-transform: lowercase;
-  }
-
-  .key-display { 
-    font-family: 'Retro Disco', 'Arial Black', sans-serif; 
-    font-size: 7.5rem; 
-    line-height: 1;
-    margin: 0;
-  }
-
-  #correction-box {
-    position: absolute;
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ff3d6a;
-    color: white;
-    padding: 5px 20px;
-    border: 4px solid black;
-    border-radius: 20px;
-    display: none;
-    text-shadow: 1px 1px 0px #000;
-  }
-
-  .answers-container { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-  .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-  .ans-btn {
-    font-family: 'Caveat Brush', cursive;
-    background: white;
-    color: black;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 30px;
-    font-size: 2rem;
-    cursor: pointer;
-    box-shadow: var(--btn-shadow);
-    transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  .ans-btn:hover { transform: translateY(-5px) scale(1.1); color: var(--accent-pink); }
-  .ans-btn:active { transform: translateY(2px) scale(0.95); }
-  .hidden { display: none !important; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iStraightImaginate</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <header class="top">
+    <div class="brand">iStraightImaginate</div>
+    <nav class="nav">
+      <a href="#music">Music</a>
+      <a href="#art">Art</a>
+      <a href="#games">Games</a>
+      <a class="pill" href="#contact">Contact</a>
+    </nav>
+  </header>
 
-<svg style="display:none">
-  <filter id="retro-warp">
-    <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" result="blur" />
-    <feOffset in="blur" dx="1.5" dy="0" result="offsetRed" />
-    <feOffset in="blur" dx="-1.5" dy="0" result="offsetBlue" />
-    <feColorMatrix in="offsetRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
-    <feColorMatrix in="offsetBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
-    <feBlend in="red" in2="blue" mode="screen" result="aberration"/>
-    <feBlend in="aberration" in2="SourceGraphic" mode="multiply" />
-  </filter>
-</svg>
-
-<div id="flash-overlay"></div>
-<div class="crt-overlay"></div>
-<div class="bg-wrap" id="bg"></div>
-
-<input type="file" id="music-upload" style="display:none" onchange="handleMusic(this)">
-
-<div class="game-container" id="game-stage">
-  <div class="hud">
-    <div>STREAK: <span id="score">0</span> | BEST: <span id="best">0</span></div>
-    <div class="nav-links">
-      <div class="music-box">
-        <span onmouseover="playHover()" onclick="document.getElementById('music-upload').click()">🎵 LOAD BGM</span>
-        <input type="range" id="vol-slider" min="0" max="1" step="0.1" value="0.5" onchange="updateVol(this.value)">
+  <main class="wrap">
+    <section class="hero">
+      <h1>We out here.</h1>
+      <p>
+        A little universe for music, cartoons, games, and whatever else my brain spawns next.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#music">Start here</a>
+        <a class="btn" href="#contact">Hit me</a>
       </div>
-      <span id="test-toggle" onmouseover="playHover()" onclick="toggleTest()">TEST</span>
-      <span id="mode-label" onmouseover="playHover()" onclick="toggleGameMode()">RELATIVES</span>
-    </div>
-  </div>
+    </section>
 
-  <div class="key-card" id="key-card">
-    <p class="instruction" id="instruction">how many accidentals are in the key of:</p>
-    <p class="key-display" id="q-prompt">C</p>
-    <div id="correction-box">Correct: <span id="correct-val"></span></div>
-  </div>
+    <section class="grid">
+      <article id="music" class="card">
+        <h2>Music</h2>
+        <p>Loops, beats, songs, projects, and experiments.</p>
+      </article>
+      <article id="art" class="card">
+        <h2>Art</h2>
+        <p>Logos, mascots, album covers, and doodle-world building.</p>
+      </article>
+      <article id="games" class="card">
+        <h2>Games</h2>
+        <p>Mini games, prototypes, and interactive ideas.</p>
+      </article>
+    </section>
 
-  <div id="grid-accidentals" class="answers-container">
-    <div class="btn-row" id="row-sharps"></div>
-    <div class="btn-row" id="row-flats"></div>
-    <div class="btn-row"><button class="ans-btn" onmouseover="playHover()" onclick="submit('0')">0#/b</button></div>
-  </div>
+    <footer id="contact" class="footer">
+      <p>© <span id="year"></span> iStraightImaginate</p>
+    </footer>
+  </main>
 
-  <div id="grid-relatives" class="answers-container hidden">
-    <div class="btn-row" id="rel-majors"></div>
-    <div class="btn-row" id="rel-minors"></div>
-  </div>
-</div>
-
-<script>
-  const keys = [
-    { maj: "C", min: "Am", sig: "0" }, { maj: "G", min: "Em", sig: "1#" }, 
-    { maj: "D", min: "Bm", sig: "2#" }, { maj: "A", min: "F#m", sig: "3#" }, 
-    { maj: "E", min: "C#m", sig: "4#" }, { maj: "B", min: "G#m", sig: "5#" }, 
-    { maj: "F#", min: "D#m", sig: "6#" }, { maj: "C#", min: "A#m", sig: "7#" }, 
-    { maj: "F", min: "Dm", sig: "1b" }, { maj: "Bb", min: "Gm", sig: "2b" }, 
-    { maj: "Eb", min: "Cm", sig: "3b" }, { maj: "Ab", min: "Fm", sig: "4b" }, 
-    { maj: "Db", min: "Bbm", sig: "5b" }, { maj: "Gb", min: "Ebm", sig: "6b" }, 
-    { maj: "Cb", min: "Abm", sig: "7b" }
-  ];
-
-  let currentMode = 'accidentals';
-  let streak = 0;
-  let best = localStorage.getItem('ksq_best_final_v5') || 0;
-  let currentKey = null;
-  let audioCtx, analyzer, dataArray, bgm;
-
-  function initCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-  function playHover() {
-    initCtx();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-  }
-
-  function playClick() {
-    initCtx();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'square'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-  }
-
-  function handleMusic(input) {
-    initCtx();
-    const file = input.files[0];
-    if (file) {
-      if(bgm) bgm.pause();
-      bgm = new Audio(URL.createObjectURL(file));
-      bgm.loop = true;
-      bgm.volume = document.getElementById('vol-slider').value;
-      const source = audioCtx.createMediaElementSource(bgm);
-      analyzer = audioCtx.createAnalyser();
-      analyzer.fftSize = 64;
-      dataArray = new Uint8Array(analyzer.frequencyBinCount);
-      source.connect(analyzer); analyzer.connect(audioCtx.destination);
-      bgm.play();
-      document.querySelector('.music-box span').innerText = "📻 ON AIR";
-      requestAnimationFrame(updateVisuals);
-    }
-  }
-
-  function updateVisuals() {
-    if (!analyzer) return;
-    analyzer.getByteFrequencyData(dataArray);
-    let avg = dataArray.reduce((a, b) => a + b) / dataArray.length;
-    let bounce = 1 + (avg / 7000); 
-    document.getElementById('key-card').style.transform = `scale(${bounce})`;
-    requestAnimationFrame(updateVisuals);
-  }
-
-  function updateVol(v) { if(bgm) bgm.volume = v; }
-
-  function triggerFeedback(isCorrect, correctValue) {
-    const stage = document.getElementById('game-stage');
-    const overlay = document.getElementById('flash-overlay');
-    const cBox = document.getElementById('correction-box');
-    overlay.style.backgroundColor = isCorrect ? 'rgba(0, 255, 100, 0.4)' : 'rgba(255, 0, 50, 0.4)';
-    overlay.style.opacity = '1';
-    setTimeout(() => overlay.style.opacity = '0', 200);
-    if (!isCorrect) {
-      stage.classList.add('shake');
-      setTimeout(() => stage.classList.remove('shake'), 300);
-      document.getElementById('correct-val').innerText = correctValue;
-      cBox.style.display = 'block';
-      setTimeout(() => { cBox.style.display = 'none'; }, 2000);
-    }
-  }
-
-  function buildButtons() {
-    const sRow = document.getElementById('row-sharps');
-    const fRow = document.getElementById('row-flats');
-    sRow.innerHTML = ''; fRow.innerHTML = '';
-    for(let i=1; i<=7; i++) {
-      let bS = document.createElement('button'); bS.className = 'ans-btn'; bS.innerText = i+'#';
-      bS.onmouseover = playHover; bS.onclick = () => submit(i+'#'); sRow.appendChild(bS);
-      let bF = document.createElement('button'); bF.className = 'ans-btn'; bF.innerText = i+'b';
-      bF.onmouseover = playHover; bF.onclick = () => submit(i+'b'); fRow.appendChild(bF);
-    }
-    const mRow = document.getElementById('rel-majors');
-    const miRow = document.getElementById('rel-minors');
-    mRow.innerHTML = ''; miRow.innerHTML = '';
-    keys.forEach(k => {
-      let bm = document.createElement('button'); bm.className='ans-btn'; bm.innerText=k.maj;
-      bm.onmouseover = playHover; bm.onclick=()=>submit(k.maj); mRow.appendChild(bm);
-      let bmi = document.createElement('button'); bmi.className='ans-btn'; bmi.innerText=k.min;
-      bmi.onmouseover = playHover; bmi.onclick=()=>submit(k.min); miRow.appendChild(bmi);
-    });
-  }
-
-  function nextQuestion() {
-    currentKey = keys[Math.floor(Math.random() * keys.length)];
-    const showMinor = Math.random() > 0.5;
-    const qLabel = showMinor ? currentKey.min : currentKey.maj;
-    document.getElementById('q-prompt').innerText = qLabel;
-    
-    const instr = document.getElementById('instruction');
-    const mRow = document.getElementById('rel-majors');
-    const miRow = document.getElementById('rel-minors');
-
-    if(currentMode === 'accidentals') {
-      instr.innerText = "how many accidentals are in the key of:";
-    } else {
-      // Logic for Relatives: Only show the opposing scale buttons
-      if (qLabel.endsWith('m')) {
-        instr.innerText = "what is the relative major of:";
-        mRow.classList.remove('hidden');
-        miRow.classList.add('hidden');
-      } else {
-        instr.innerText = "what is the relative minor of:";
-        mRow.classList.add('hidden');
-        miRow.classList.remove('hidden');
-      }
-    }
-  }
-
-  function submit(val) {
-    playClick();
-    let qTxt = document.getElementById('q-prompt').innerText;
-    let correctVal = (currentMode === 'accidentals') ? currentKey.sig : 
-                    (qTxt === currentKey.maj ? currentKey.min : currentKey.maj);
-    if (val === correctVal) {
-      streak++;
-      if (streak > best) { best = streak; localStorage.setItem('ksq_best_final_v5', best); }
-      triggerFeedback(true);
-      setTimeout(nextQuestion, 400);
-    } else {
-      streak = 0;
-      triggerFeedback(false, correctVal);
-    }
-    document.getElementById('score').innerText = streak;
-    document.getElementById('best').innerText = best;
-  }
-
-  function toggleGameMode() {
-    playClick();
-    currentMode = (currentMode === 'accidentals') ? 'relatives' : 'accidentals';
-    document.body.classList.toggle('rel-mode', currentMode === 'relatives');
-    document.getElementById('grid-accidentals').classList.toggle('hidden', currentMode === 'relatives');
-    document.getElementById('grid-relatives').classList.toggle('hidden', currentMode === 'accidentals');
-    document.getElementById('mode-label').innerText = currentMode === 'accidentals' ? 'RELATIVES' : 'ACCIDENTALS';
-    nextQuestion();
-  }
-
-  function toggleTest() {
-    playClick();
-    streak = 0;
-    document.getElementById('score').innerText = 0;
-    nextQuestion();
-  }
-
-  buildButtons();
-  nextQuestion();
-  document.getElementById('best').innerText = best;
-</script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
