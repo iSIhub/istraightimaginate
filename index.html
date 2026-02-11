@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - Pulse & Fast Stripes</title>
+    <title>iSI - High Speed & Protected</title>
     <style>
         body, html {
             margin: 0;
@@ -15,6 +15,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* Prevents text selection across the site */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         /* 1. Background Layer */
@@ -47,8 +50,8 @@
                 #99bcff 80px,
                 #99bcff 160px
             );
-            /* FASTER STRIPES: Changed from 10s to 5s */
-            animation: scrollSeamless 5s linear infinite;
+            /* SPEED: Changed to 2.5s for a very fast, high-energy scroll */
+            animation: scrollSeamless 2.5s linear infinite;
         }
 
         /* Pink Tint / Chromatic Aberration */
@@ -76,6 +79,8 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: 2;
+            /* pointer-events: none makes it unclickable, 
+               but we also block context menu in JS below */
             pointer-events: none;
         }
 
@@ -85,7 +90,6 @@
             z-index: 3;
             width: 45%;
             max-width: 700px;
-            /* Applying the pulse animation */
             animation: pulseLogo 3s ease-in-out infinite;
         }
 
@@ -93,27 +97,24 @@
             width: 100%;
             height: auto;
             display: block;
+            /* Prevents dragging the image */
+            -webkit-user-drag: none;
         }
 
         /* ANIMATIONS */
-        
-        /* Stripes Loop */
         @keyframes scrollSeamless {
             from { transform: translate(0, 0); }
             to { transform: translate(226.27px, 0); }
         }
 
-        /* Subtle Logo Pulse */
         @keyframes pulseLogo {
             0% { transform: rotate(-2deg) scale(1); }
-            50% { transform: rotate(-2deg) scale(1.05); } /* Scales up 5% */
+            50% { transform: rotate(-2deg) scale(1.05); }
             100% { transform: rotate(-2deg) scale(1); }
         }
     </style>
 </head>
-<body>
-
-    <div class="stripes-container">
+<body oncontextmenu="return false;"> <div class="stripes-container">
         <div class="chromatic-wrapper">
             <div class="channel green"></div>
             <div class="channel red"></div>
@@ -124,8 +125,19 @@
     <div class="polygon-overlay"></div>
 
     <div class="logo-container">
-        <img src="logo.png" alt="iSI Logo">
+        <img src="logo.png" alt="iSI Logo" draggable="false">
     </div>
 
+    <script>
+        // Additional layer of security to prevent right-click and dragging
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // Prevent keyboard shortcuts like Ctrl+S or Ctrl+U (Optional but helpful)
+        document.onkeydown = function(e) {
+            if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) {
+                return false;
+            }
+        };
+    </script>
 </body>
 </html>
