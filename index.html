@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - Seamless Fix</title>
+    <title>iSI - Wide Stripes & Pink Tint</title>
     <style>
         body, html {
             margin: 0;
@@ -40,45 +40,44 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            /* GENERATING THE PATTERN VIA CSS FOR A PERFECT LOOP */
+            /* WIDER STRIPES: 80px wide color bands */
             background: repeating-linear-gradient(
                 135deg,
                 #6b9dff,
-                #6b9dff 50px,
-                #99bcff 50px,
-                #99bcff 100px
+                #6b9dff 80px, 
+                #99bcff 80px,
+                #99bcff 160px
             );
-            /* This exact number (141.42px) is the math for a 100px stripe at 135 degrees */
-            animation: scrollSeamless 8s linear infinite;
+            animation: scrollSeamless 10s linear infinite;
         }
 
-        /* Chromatic Aberration Offsets */
+        /* Creates the pink tint via blending */
         .red {
-            transform: translateX(-4px);
+            transform: translateX(-5px);
             mix-blend-mode: screen;
-            filter: brightness(0.9) sepia(1) hue-rotate(-50deg) saturate(3);
+            filter: brightness(0.9) sepia(1) hue-rotate(-50deg) saturate(4);
         }
         .green {
             transform: translateX(0px);
         }
         .blue {
-            transform: translateX(4px);
+            transform: translateX(5px);
             mix-blend-mode: screen;
-            filter: brightness(0.9) sepia(1) hue-rotate(190deg) saturate(3);
+            filter: brightness(0.9) sepia(1) hue-rotate(190deg) saturate(4);
         }
 
-        /* 2. The Static Black Polygon Overlay */
+        /* 2. The Static Black Polygon Overlay - Corrected Filename */
         .polygon-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('black polygon.png');
+            background-image: url('polygon.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            z-index: 2;
+            z-index: 2; 
             pointer-events: none;
         }
 
@@ -97,11 +96,10 @@
             display: block;
         }
 
-        /* THE PERFECT MATH LOOP */
+        /* Seamless Loop Math */
         @keyframes scrollSeamless {
             from { transform: translate(0, 0); }
-            /* Moving exactly by the pattern width ensures no glitch */
-            to { transform: translate(141.42px, 0); }
+            to { transform: translate(226.27px, 0); }
         }
     </style>
 </head>
