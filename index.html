@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - Wide Stripes & Pink Tint</title>
+    <title>iSI - Pulse & Fast Stripes</title>
     <style>
         body, html {
             margin: 0;
@@ -40,7 +40,6 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            /* WIDER STRIPES: 80px wide color bands */
             background: repeating-linear-gradient(
                 135deg,
                 #6b9dff,
@@ -48,25 +47,24 @@
                 #99bcff 80px,
                 #99bcff 160px
             );
-            animation: scrollSeamless 10s linear infinite;
+            /* FASTER STRIPES: Changed from 10s to 5s */
+            animation: scrollSeamless 5s linear infinite;
         }
 
-        /* Creates the pink tint via blending */
+        /* Pink Tint / Chromatic Aberration */
         .red {
             transform: translateX(-5px);
             mix-blend-mode: screen;
             filter: brightness(0.9) sepia(1) hue-rotate(-50deg) saturate(4);
         }
-        .green {
-            transform: translateX(0px);
-        }
+        .green { transform: translateX(0px); }
         .blue {
             transform: translateX(5px);
             mix-blend-mode: screen;
             filter: brightness(0.9) sepia(1) hue-rotate(190deg) saturate(4);
         }
 
-        /* 2. The Static Black Polygon Overlay - Corrected Filename */
+        /* 2. Polygon Overlay */
         .polygon-overlay {
             position: absolute;
             top: 0;
@@ -77,17 +75,18 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            z-index: 2; 
+            z-index: 2;
             pointer-events: none;
         }
 
-        /* 3. The Logo */
+        /* 3. The Logo with Pulse */
         .logo-container {
             position: relative;
             z-index: 3;
             width: 45%;
             max-width: 700px;
-            transform: rotate(-2deg);
+            /* Applying the pulse animation */
+            animation: pulseLogo 3s ease-in-out infinite;
         }
 
         .logo-container img {
@@ -96,10 +95,19 @@
             display: block;
         }
 
-        /* Seamless Loop Math */
+        /* ANIMATIONS */
+        
+        /* Stripes Loop */
         @keyframes scrollSeamless {
             from { transform: translate(0, 0); }
             to { transform: translate(226.27px, 0); }
+        }
+
+        /* Subtle Logo Pulse */
+        @keyframes pulseLogo {
+            0% { transform: rotate(-2deg) scale(1); }
+            50% { transform: rotate(-2deg) scale(1.05); } /* Scales up 5% */
+            100% { transform: rotate(-2deg) scale(1); }
         }
     </style>
 </head>
