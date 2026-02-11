@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - High Speed & Protected</title>
+    <title>iSI - High Speed & Juiced</title>
     <style>
         body, html {
             margin: 0;
@@ -15,7 +15,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Prevents text selection across the site */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -50,7 +49,6 @@
                 #99bcff 80px,
                 #99bcff 160px
             );
-            /* SPEED: Changed to 2.5s for a very fast, high-energy scroll */
             animation: scrollSeamless 2.5s linear infinite;
         }
 
@@ -79,17 +77,17 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: 2;
-            /* pointer-events: none makes it unclickable, 
-               but we also block context menu in JS below */
             pointer-events: none;
         }
 
-        /* 3. The Logo with Pulse */
+        /* 3. The Juiced Logo */
         .logo-container {
             position: relative;
             z-index: 3;
             width: 45%;
             max-width: 700px;
+            cursor: pointer;
+            transition: filter 0.3s ease, transform 0.3s ease;
             animation: pulseLogo 3s ease-in-out infinite;
         }
 
@@ -97,8 +95,22 @@
             width: 100%;
             height: auto;
             display: block;
-            /* Prevents dragging the image */
             -webkit-user-drag: none;
+            /* Smooth transition for the hover "juice" */
+            transition: filter 0.4s ease;
+        }
+
+        /* --- THE HOVER JUICE --- */
+        .logo-container:hover {
+            /* Intense glow and slight lift */
+            filter: drop-shadow(0 0 20px rgba(153, 188, 255, 0.8));
+            /* Speeds up the pulse when you touch it */
+            animation: pulseLogo 0.8s ease-in-out infinite;
+        }
+
+        .logo-container:active {
+            /* "Click" effect: shrinks slightly */
+            transform: scale(0.95) rotate(-3deg);
         }
 
         /* ANIMATIONS */
@@ -114,7 +126,9 @@
         }
     </style>
 </head>
-<body oncontextmenu="return false;"> <div class="stripes-container">
+<body oncontextmenu="return false;">
+
+    <div class="stripes-container">
         <div class="chromatic-wrapper">
             <div class="channel green"></div>
             <div class="channel red"></div>
@@ -129,14 +143,9 @@
     </div>
 
     <script>
-        // Additional layer of security to prevent right-click and dragging
         document.addEventListener('contextmenu', event => event.preventDefault());
-        
-        // Prevent keyboard shortcuts like Ctrl+S or Ctrl+U (Optional but helpful)
         document.onkeydown = function(e) {
-            if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) {
-                return false;
-            }
+            if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) return false;
         };
     </script>
 </body>
