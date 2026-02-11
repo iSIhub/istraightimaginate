@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSI - Chromatic Aberration</title>
+    <title>iSI - Final Build</title>
     <style>
         body, html {
             margin: 0;
@@ -17,7 +17,7 @@
             justify-content: center;
         }
 
-        /* 1. The Scrolling Background Layer */
+        /* 1. Background Container */
         .stripes-container {
             position: absolute;
             top: 0;
@@ -26,72 +26,63 @@
             height: 100%;
             z-index: 1;
             overflow: hidden;
-            background: #000;
         }
 
-        /* This wrapper holds the three color channels */
+        /* 2. Chromatic Aberration Setup */
         .chromatic-wrapper {
             position: absolute;
             width: 100%;
             height: 100%;
-            filter: contrast(1.2); /* Makes colors pop */
         }
 
         .channel {
             position: absolute;
             top: 0;
-            left: -20%;
-            width: 200%;
+            left: 0;
+            width: 200%; /* Spans double width for seamless loop */
             height: 100%;
             background-image: url('stripes.png');
             background-repeat: repeat-x;
             background-size: auto 100%;
-            mix-blend-mode: screen; /* This allows colors to overlap and form white */
-            animation: scrollBackground 15s linear infinite;
+            mix-blend-mode: screen; /* Allows RGB channels to blend */
+            animation: scrollHorizontal 10s linear infinite;
         }
 
-        /* Offset the Red and Blue channels to create the aberration */
-        .channel.red {
-            filter: drop-shadow(0 0 0 red) tint(red);
-            /* We simulate the color channel by shifting pixels slightly */
-            transform: translateX(-3px); 
-            opacity: 0.9;
+        /* Shifted color channels for the aberration effect */
+        .red {
+            transform: translateX(-4px);
             filter: brightness(1) sepia(1) hue-rotate(-50deg) saturate(5);
         }
-
-        .channel.green {
+        .green {
             transform: translateX(0px);
             filter: brightness(1) sepia(1) hue-rotate(70deg) saturate(5);
         }
-
-        .channel.blue {
-            transform: translateX(3px);
-            opacity: 0.9;
+        .blue {
+            transform: translateX(4px);
             filter: brightness(1) sepia(1) hue-rotate(190deg) saturate(5);
         }
 
-        /* 2. The Static Black Polygon Layer */
+        /* 3. The Static Black Polygon Overlay */
         .polygon-overlay {
             position: absolute;
             top: 0;
-            right: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background-image: url('polygon.png');
             background-size: cover;
-            background-position: right center;
+            background-position: center;
             background-repeat: no-repeat;
             z-index: 2;
             pointer-events: none;
         }
 
-        /* 3. The Logo Layer */
+        /* 4. The Logo */
         .logo-container {
             position: relative;
             z-index: 3;
             width: 45%;
-            max-width: 800px;
-            transform: rotate(-2deg);
+            max-width: 700px;
         }
 
         .logo-container img {
@@ -100,12 +91,11 @@
             display: block;
         }
 
-        /* Seamless Horizontal Scroll */
-        @keyframes scrollBackground {
-            from { left: -20%; }
-            to { left: -100%; } /* Adjust based on image width to loop */
+        /* Strictly horizontal scrolling */
+        @keyframes scrollHorizontal {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
         }
-
     </style>
 </head>
 <body>
@@ -121,7 +111,7 @@
     <div class="polygon-overlay"></div>
 
     <div class="logo-container">
-        <img src="iSI logo.png" alt="iSI Logo">
+        <img src="logo.png" alt="iSI Logo">
     </div>
 
 </body>
